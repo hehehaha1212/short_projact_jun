@@ -1,14 +1,24 @@
-import Services from './components/landingpage/OurServices';
-import Features from './components/landingpage/Features';
-import AboutSection from './components/landingpage/AboutSection';
+import Navbar from './components/Navbar'
+import Footer from './components/Footer'
+import { Route, Routes } from 'react-router-dom'
+import ContactUs from './pages/ContactUs'
+import FeaturesSection from './components/landingpage/Features'
+import ServiceSection from './components/landingpage/OurServices'
+import AboutSection from './components/landingpage/AboutSection'
 
-function App() {
-  return(
-    <div className="App">
-      <Services/>
-      <Features/>
+const App = () => {
+  return (
+    <>
+      <Navbar />
+      <ServiceSection/>
+      <FeaturesSection />
       <AboutSection/>
-    </div>
+      <Routes>
+        <Route path="/" element={<ContactUs/>}/>
+        <Route path="/contact-us" element={<ContactUs/>}/>
+      </Routes>
+      <Footer />
+    </>
   )
 }
 
