@@ -36,11 +36,7 @@ function Features() {
         </div>
         <div className="lg:col-span-7 w-full grid grid-cols-2 sm:grid-cols-3 gap-4 md:gap-6">
           {featuresData.map((feature) => (
-            <FeatureCard 
-              key={feature.id} 
-              icon={feature.icon} 
-              title={feature.title} 
-            />
+            <FeatureCard key={feature.id} icon={feature.icon} title={feature.title}/>
           ))}
         </div>
       </div>
