@@ -6,18 +6,24 @@ import FeaturesSection from './components/landingpage/Features'
 import ServiceSection from './components/landingpage/OurServices'
 import AboutSection from './components/landingpage/AboutSection'
 import HeroSection from './components/landingpage/Hero'
+import AdminPanel from './pages/AdminPanel'
 
 const App = () => {
   return (
     <>
       <Navbar />
-      <HeroSection/>
-      <ServiceSection/>
-      <FeaturesSection />
-      <AboutSection/>
       <Routes>
-        <Route path="/" element={<ContactUs/>}/>
-        <Route path="/contact-us" element={<ContactUs/>}/>
+        <Route path="/" element={
+          <>
+            <HeroSection/>
+            <ServiceSection/>
+            <FeaturesSection />
+            <AboutSection/>
+            <ContactUs/>
+          </>
+        }/>
+        <Route path="/contactus" element={<ContactUs/>}/>
+        <Route path="/admin" element={<AdminPanel />} />
       </Routes>
       <Footer />
     </>
