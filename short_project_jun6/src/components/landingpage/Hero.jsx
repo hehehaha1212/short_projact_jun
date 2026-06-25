@@ -50,10 +50,10 @@ function Hero() {
           </p>
           <div className="flex flex-wrap gap-4">
             <button className="bg-[#1A49C9] text-white text-lg font-bold px-5 py-2.5 rounded-xl flex items-center hover:bg-[#153eb2] transition-colors duration-200 shadow-lg cursor-pointer md:text-lg">
-              Our Services
+              <a href="/services">Our Services</a>
             </button>
             <button className="bg-white/10 backdrop-blur-md text-white font-bold px-5 py-2.5 rounded-xl hover:bg-white/20 transition-colors border border-white/20 shadow-md cursor-pointer text-lg md:text-lg">
-              Contact Us
+              <a href="/contact">Contact Us</a>
             </button>
           </div>
         </div>

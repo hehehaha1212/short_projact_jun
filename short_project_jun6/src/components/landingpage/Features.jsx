@@ -31,7 +31,7 @@ function Features() {
             We turn your ideas into impactful printed solutions. Combining modern technology and premium materials, we deliver quality you can trust for every project.
           </p>
           <button className="bg-[#F1C40F] text-[#021335] text-xl font-bold px-6 py-3 rounded-xl flex items-center gap-2 hover:bg-[#e1b20a] transition-colors duration-200 shadow-md cursor-pointer mt-4">
-            Know More <span className="text-lg">➔</span>
+            <a href="/about">Know More</a> <span className="text-lg">➔</span>
           </button>
         </div>
         <div className="lg:col-span-7 w-full grid grid-cols-2 sm:grid-cols-3 gap-4 md:gap-6">

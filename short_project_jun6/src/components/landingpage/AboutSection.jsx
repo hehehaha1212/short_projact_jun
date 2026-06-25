@@ -38,7 +38,7 @@ function AboutSection() {
             ))}
           </ul>
           <button className="bg-[#1A49C9] text-white text-xl font-bold px-6 py-3 rounded-xl flex items-center gap-2 hover:bg-blue-900 transition-colors duration-200 shadow-md cursor-pointer mt-4">
-            Learn More <span className="text-lg">➔</span>
+            <a href="/services">Learn More <span className="text-lg">➔</span></a>
           </button>
         </div>
       </div>
