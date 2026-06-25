@@ -1,9 +1,9 @@
 import aboutImage from '../../assets/printers.png';
 function AboutSection() {
   const bulletPoints = [
-    'abcdefghijklmnopqrstuv',
-    'abcdefghijklmnopqrstuv',
-    'abcdefghijklmnopqrstuv',
+    'Business Cards, Brochures & Flyers',
+    'Wedding Cards & Invitation Printing',
+    'High-Quality Printing with Sharp & Vibrant Results',
   ];
   return (
     <section className="pt-4 pb-16 px-6 md:px-16 lg:px-24 bg-white">
@@ -25,7 +25,7 @@ function AboutSection() {
             <span className="text-[#1A49C9]">Printing Partner</span>
           </h2>
           <p className="text-black text-lg md:text-base leading-relaxed mb-6 max-w-md">
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eius porro qui inventore id iure.
+            We help businesses and individuals bring their ideas to life through premium printing services.
           </p>
           <ul className="space-y-4 mb-8">
             {bulletPoints.map((point, index) => (

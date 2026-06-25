@@ -1,49 +1,99 @@
 import React from "react";
 import { FaMapMarkerAlt, FaEnvelope, FaPhoneAlt } from "react-icons/fa";
 
+import { useState, useEffect } from "react";
+import { fetchBanners } from "./../api.js";
+import hero1 from "./../assets/hero1.png";
+import hero2 from "./../assets/hero2.png";
+import hero3 from "./../assets/hero3.png";
+
 const ContactUs = () => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [images, setImages] = useState([hero1, hero2, hero3]);
+  useEffect(() => {
+    fetchBanners()
+      .then((data) => {
+        if (data && data.images && data.images.length > 0)
+          setImages(data.images);
+      })
+      .catch((err) => console.error("Could not load database banners:", err));
+  }, []);
+
+  useEffect(() => {
+    if (images.length === 0) return;
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % images.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [images]);
+
   return (
     <div className="w-full bg-white mx-auto text-left">
-
       {/* Hero Section */}
-      <section className="bg-gray-200 py-20 px-6 md:px-16">
-        <div className="max-w-7xl mx-auto">
-          <h4 className="text-blue-600 font-bold uppercase tracking-wide mb-2">
+      <section className="relative min-h-[600px] overflow-hidden px-6 md:px-16 lg:px-24">
+        <div className="absolute inset-0 w-full h-full z-0">
+          {images.map((imgUrl, index) => (
+            <div
+              key={index}
+              className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${index === currentSlide ? "opacity-100" : "opacity-0"}`}
+            >
+              <img
+                src={imgUrl}
+                alt={`Background slide ${index + 1}`}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-slate-950/40 backdrop-blur-[3px]"></div>
+            </div>
+          ))}
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto text-left pt-32 pb-20">
+          <h4 className="text-[#FFC107] font-bold text-xl mb-3">
             Get In Touch With Us
           </h4>
 
-          <h1 className="text-4xl md:text-6xl text-black font-bold leading-tight">
+          <h1 className="text-4xl md:text-6xl text-white font-bold leading-tight">
             Let's Print Something
             <br />
-            <span className="text-blue-600">Amazing Together</span>
+            <span className="text-blue-400">Amazing Together</span>
           </h1>
 
-          <p className="mt-6 text-gray-700 max-w-md text-lg">
-            We would love to hear from you.
-            Whether you have a query or want to discuss your
-            printing needs.
+          <p className="mt-6 text-white max-w-md text-lg">
+            We would love to hear from you. Whether you have a query or want to
+            discuss your printing needs.
           </p>
 
           <button className="mt-8 bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full font-semibold transition">
             Contact Us →
           </button>
         </div>
+
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3 z-20">
+          {images.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentSlide(index)}
+              className={`transition-all duration-300 h-2.5 rounded-full cursor-pointer ${
+                index === currentSlide
+                  ? "w-8 bg-[#FFC107]"
+                  : "w-2.5 bg-white/50"
+              }`}
+            />
+          ))}
+        </div>
       </section>
 
       {/* Contact Section */}
       <section className="max-w-7xl mx-auto px-6 py-6">
         <div className="grid lg:grid-cols-2 gap-10">
-
           {/* Left Side */}
           <div>
-            <h2 className="text-4xl font-bold mb-4 text-black">
-              GET IN TOUCH
-            </h2>
+            <h2 className="text-4xl font-bold mb-4 text-black">GET IN TOUCH</h2>
 
             <p className="text-gray-600 mb-8 pb-6">
-              Need high-quality printing services or have a custom printing requirement? 
-              Contact Puja Printers, and we will be happy to assist you.
-              
+              Need high-quality printing services or have a custom printing
+              requirement? Contact Puja Printers, and we will be happy to assist
+              you.
             </p>
 
             {/* Address Card */}
@@ -55,8 +105,8 @@ const ContactUs = () => {
               <div>
                 <h3 className="font-bold text-lg">Our Location</h3>
                 <p className="text-gray-500 text-sm">
-                  Rajendra Prasad Colony (West),
-                  Gorakhnath, Gorakhpur - 273010 (U.P)
+                  Rajendra Prasad Colony (West), Gorakhnath, Gorakhpur - 273010
+                  (U.P)
                 </p>
               </div>
             </div>
@@ -69,9 +119,7 @@ const ContactUs = () => {
 
               <div>
                 <h3 className="font-bold text-lg">Mail Us</h3>
-                <p className="text-gray-500 text-sm">
-                  pujaprinters@gmail.com
-                </p>
+                <p className="text-gray-500 text-sm">pujaprinters@gmail.com</p>
               </div>
             </div>
 
@@ -83,21 +131,16 @@ const ContactUs = () => {
 
               <div>
                 <h3 className="font-bold text-lg">Call Us</h3>
-                <p className="text-gray-500 text-sm">
-                  +91 8127918160
-                </p>
+                <p className="text-gray-500 text-sm">+91 8127918160</p>
               </div>
             </div>
           </div>
 
           {/* Right Side Form */}
           <div className="border rounded-3xl p-8 shadow-sm">
-            <h2 className="text-3xl font-bold mb-6">
-              SEND US A MESSAGE
-            </h2>
+            <h2 className="text-3xl font-bold mb-6">SEND US A MESSAGE</h2>
 
             <form className="space-y-4">
-
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
                   <label className="block mb-1 text-sm font-medium">
@@ -159,7 +202,6 @@ const ContactUs = () => {
               </button>
             </form>
           </div>
-
         </div>
       </section>
     </div>

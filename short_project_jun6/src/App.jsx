@@ -19,7 +19,12 @@ const App = () => {
             <ServiceSection/>
             <FeaturesSection />
             <AboutSection/>
-            <ContactUs/>
+          </>
+        }/>
+        <Route path="/about" element={
+          <>
+            <HeroSection/>
+            <AboutSection/>
           </>
         }/>
         <Route path="/contact" element={<ContactUs/>}/>
