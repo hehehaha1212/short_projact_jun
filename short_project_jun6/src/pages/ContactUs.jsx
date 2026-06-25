@@ -27,6 +27,56 @@ const ContactUs = () => {
     return () => clearInterval(timer);
   }, [images]);
 
+  const [loading, setLoading] = useState(false);
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    subject: "",
+    message: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const res = await fetch("http://localhost:5000/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!res.ok) throw new Error("Failed to send message");
+
+      alert("Message sent successfully!");
+
+      // reset form
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        subject: "",
+        message: "",
+      });
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="w-full bg-white mx-auto text-left">
       {/* Hero Section */}
@@ -140,14 +190,17 @@ const ContactUs = () => {
           <div className="border rounded-3xl p-8 shadow-sm">
             <h2 className="text-3xl font-bold mb-6">SEND US A MESSAGE</h2>
 
-            <form className="space-y-4">
+            <form className="space-y-4" onSubmit={handleSubmit}>
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
                   <label className="block mb-1 text-sm font-medium">
                     Your Name
                   </label>
                   <input
-                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="Your Name"
                     className="w-full border rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
@@ -157,7 +210,10 @@ const ContactUs = () => {
                     Your Email
                   </label>
                   <input
-                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="Your Email"
                     className="w-full border rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
@@ -168,7 +224,10 @@ const ContactUs = () => {
                   Phone No.
                 </label>
                 <input
-                  type="text"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  placeholder="Phone No."
                   className="w-full border rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
@@ -178,7 +237,10 @@ const ContactUs = () => {
                   Subject
                 </label>
                 <input
-                  type="text"
+                  name="subject"
+                  value={formData.subject}
+                  onChange={handleChange}
+                  placeholder="Subject"
                   className="w-full border rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
@@ -189,6 +251,10 @@ const ContactUs = () => {
                 </label>
 
                 <textarea
+                  name="message"
+                  value={formData.message}
+                  onChange={handleChange}
+                  placeholder="Message"
                   rows="5"
                   className="w-full border rounded-lg px-4 py-3 outline-none resize-none focus:ring-2 focus:ring-blue-500"
                 ></textarea>
@@ -196,9 +262,10 @@ const ContactUs = () => {
 
               <button
                 type="submit"
+                disabled={loading}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition"
               >
-                Send Message
+                {loading ? "Sending..." : "Send Message"}
               </button>
             </form>
           </div>
