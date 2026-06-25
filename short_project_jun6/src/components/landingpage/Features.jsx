@@ -28,7 +28,7 @@ function Features() {
             <span className="text-[#F1C40F] mb-2">Every Time</span>
           </h2>
           <p className="text-slate-400 text-sm md:text-lg leading-relaxed my-3 max-w-md">
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eius porro qui inventore id iure.
+            We turn your ideas into impactful printed solutions. Combining modern technology and premium materials, we deliver quality you can trust for every project.
           </p>
           <button className="bg-[#F1C40F] text-[#021335] text-xl font-bold px-6 py-3 rounded-xl flex items-center gap-2 hover:bg-[#e1b20a] transition-colors duration-200 shadow-md cursor-pointer mt-4">
             Know More <span className="text-lg">➔</span>
