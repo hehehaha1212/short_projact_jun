@@ -7,6 +7,8 @@ import ServiceSection from './components/landingpage/OurServices'
 import AboutSection from './components/landingpage/AboutSection'
 import HeroSection from './components/landingpage/Hero'
 import AdminPanel from './pages/AdminPanel'
+import AdminLogin from './pages/AdminLogin'
+import ProtectedRoute from './components/ProtectedRoute'
 import Services from './components/landingpage/OurServices'
 
 const App = () => {
@@ -30,7 +32,12 @@ const App = () => {
         }/>
         <Route path="/contact" element={<ContactUs/>}/>
         <Route path="/services" element={<Services/>}/>
-        <Route path="/admin" element={<AdminPanel />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin" element={
+          <ProtectedRoute>
+            <AdminPanel />
+          </ProtectedRoute>
+        } />
       </Routes>
       <Footer />
     </>
