@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import ServiceCard from './ServiceCard.jsx';
 import { fetchServices } from '../../api.js';
-import icon1 from '../../assets/icon4.png';
-import icon2 from '../../assets/icon3.png';
-import icon3 from '../../assets/icon2.png';
-import icon4 from '../../assets/icon1.png';
+// import icon1 from '../../assets/icon4.png';
+// import icon2 from '../../assets/icon3.png';
+// import icon3 from '../../assets/icon2.png';
+// import icon4 from '../../assets/icon1.png';
 
 function Services() {
   // const servicesData = [
