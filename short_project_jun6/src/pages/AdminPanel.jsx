@@ -5,8 +5,6 @@ import { useNavigate } from 'react-router-dom';
 const Dialog = ({ dialog, onConfirm, onClose }) => {
   if (!dialog.open) return null;
 
-  const navigate = useNavigate();
-  const currAdmin = JSON.parse(localStorage.getItem('pp_admin_user') || 'null');
   const icons = {
     confirm: { bg: 'bg-red-100', text: 'text-red-600', symbol: '!' },
     success: { bg: 'bg-green-100', text: 'text-green-600', symbol: '✓' },
@@ -59,6 +57,9 @@ const Dialog = ({ dialog, onConfirm, onClose }) => {
 const TABS = ['Banners', 'Services', 'Messages'];
 
 const AdminPanel = () => {
+
+  const navigate = useNavigate();
+  const currentAdmin = JSON.parse(localStorage.getItem('pp_admin_user') || 'null');
   const [activeTab, setActiveTab] = useState('Banners');
   const [bannerImages, setBannerImages] = useState([]);
   const [bannerFile, setBannerFile] = useState(null);
