@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
-import { fetchBanners, uploadBannerImage, deleteBannerImage, fetchServices, createService, deleteService, fetchContactMessages, sendContactMessage, markContactMessageRead, deleteContactMessage } from '../api.js';
+import { fetchBanners, uploadBannerImage, deleteBannerImage, fetchServices, createService, deleteService, fetchContactMessages, sendContactMessage, markContactMessageRead, deleteContactMessage, fetchAdmins, createAdminUser, deleteAdminUser } from '../api.js';
+import { useNavigate } from 'react-router-dom';
 
 const Dialog = ({ dialog, onConfirm, onClose }) => {
   if (!dialog.open) return null;
 
+  const navigate = useNavigate();
+  const currAdmin = JSON.parse(localStorage.getItem('pp_admin_user') || 'null');
   const icons = {
     confirm: { bg: 'bg-red-100', text: 'text-red-600', symbol: '!' },
     success: { bg: 'bg-green-100', text: 'text-green-600', symbol: '✓' },
@@ -68,6 +71,11 @@ const AdminPanel = () => {
   const [messages, setMessages] = useState([]);
   const [expandedMessageId, setExpandedMessageId] = useState(null);
 
+  const [admins, setAdmins] = useState([]);
+  const [adminName, setAdminName] = useState('');
+  const [adminEmail, setAdminEmail] = useState('');
+  const [adminPassword, setAdminPassword] = useState('');
+
   const [dialog, setDialog] = useState({ open: false, type: '', title: '', message: '', onConfirm: null });
 
   const showConfirm = (title, message, onConfirm) =>
@@ -85,10 +93,18 @@ const AdminPanel = () => {
       .catch(err => console.error("Could not fetch contact messages:", err));
   };
 
+  const loadAdmins = () => {
+    fetchAdmins()
+      .then(data => Array.isArray(data) && setAdmins(data))
+      .catch(err => console.error("Could not fetch admins:", err));
+  };
+
+
   useEffect(() => {
     fetchBanners().then(data => data?.images && setBannerImages(data.images));
     fetchServices().then(data => Array.isArray(data) && setServices(data));
     loadMessages();
+    loadAdmins();
   }, []);
 
   const handleBannerUpload = async (e) => {
@@ -192,6 +208,49 @@ const AdminPanel = () => {
     );
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('pp_admin_token');
+    localStorage.removeItem('pp_admin_user');
+    navigate('/admin/login');
+  };
+
+  const handleCreateAdmin = async (e) => {
+    e.preventDefault();
+    if (!adminName || !adminEmail || !adminPassword) {
+      return showError('Missing fields', 'Name, email and password are all required.');
+    }
+    if (adminPassword.length < 6) {
+      return showError('Weak password', 'Password must be at least 6 characters.');
+    }
+
+    const created = await createAdminUser({ name: adminName, email: adminEmail, password: adminPassword });
+    if (created?.id) {
+      setAdmins([created, ...admins]);
+      setAdminName('');
+      setAdminEmail('');
+      setAdminPassword('');
+      showSuccess('Admin added', `${created.name} can now sign in.`);
+    } else {
+      showError('Failed to add admin', created?.error || 'Something went wrong. Please try again.');
+    }
+  };
+
+  const handleDeleteAdmin = (id, name) => {
+    showConfirm(
+      `Remove "${name}"?`,
+      'This admin will no longer be able to sign in.',
+      async () => {
+        closeDialog();
+        const res = await deleteAdminUser(id);
+        if (res.success) {
+          setAdmins(admins.filter(a => a._id !== id));
+        } else {
+          showError('Delete failed', res?.error || 'Could not remove this admin.');
+        }
+      }
+    );
+  };
+
   const unreadCount = messages.filter(m => !m.isRead).length;
   const formatDate = (dateStr) => {
     if (!dateStr) return '';
@@ -208,6 +267,7 @@ const AdminPanel = () => {
       label: 'Messages',
       badge: unreadCount > 0 ? unreadCount : null,
     },
+    { key: 'admins', label: 'Admins' },
   ];
 
   return (
@@ -215,7 +275,20 @@ const AdminPanel = () => {
 
       <Dialog dialog={dialog} onConfirm={dialog.onConfirm} onClose={closeDialog} />
 
-      <h1 className="text-3xl font-extrabold mb-8 text-[#021335]">Admin Dashboard</h1>
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="text-3xl font-extrabold text-[#021335]">Admin Dashboard</h1>
+        <div className="flex items-center gap-3">
+          {currentAdmin?.name && (
+            <span className="text-sm text-gray-500">Signed in as <span className="font-bold text-[#021335]">{currentAdmin.name}</span></span>
+          )}
+          <button
+            onClick={handleLogout}
+            className="bg-slate-100 hover:bg-slate-200 text-[#021335] px-4 py-2 rounded-xl font-bold text-sm transition-colors"
+          >
+            Log Out
+          </button>
+        </div>
+      </div>
       <div className="flex gap-2 mb-8 border-b border-slate-200">
         {tabConfig.map(tab => (
           <button
@@ -380,6 +453,54 @@ const AdminPanel = () => {
               ))}
             </div>
           )}
+        </div>
+      )}
+
+      {activeTab === 'admins' && (
+        <div className="bg-slate-50 border p-6 rounded-2xl mt-8">
+          <h2 className="text-xl font-bold mb-4 text-[#1A49C9]">Manage Admins</h2>
+
+          <form onSubmit={handleCreateAdmin} className="grid md:grid-cols-4 gap-4 items-end bg-white p-4 rounded-xl border">
+            <div>
+              <label className="block text-xs font-bold mb-1">Name</label>
+              <input type="text" value={adminName} onChange={e => setAdminName(e.target.value)} className="w-full border p-2 rounded-lg text-sm" placeholder="e.g. Priya Sharma" />
+            </div>
+            <div>
+              <label className="block text-xs font-bold mb-1">Email</label>
+              <input type="email" value={adminEmail} onChange={e => setAdminEmail(e.target.value)} className="w-full border p-2 rounded-lg text-sm" placeholder="admin@pujaprinters.com" />
+            </div>
+            <div>
+              <label className="block text-xs font-bold mb-1">Password</label>
+              <input type="password" value={adminPassword} onChange={e => setAdminPassword(e.target.value)} className="w-full border p-2 rounded-lg text-sm" placeholder="At least 6 characters" />
+            </div>
+            <button type="submit" className="bg-[#1A49C9] text-white px-6 py-2 rounded-xl font-bold text-sm h-fit">
+              Add Admin
+            </button>
+          </form>
+
+          <div className="mt-6 space-y-2">
+            {admins.length === 0 && (
+              <p className="text-sm text-gray-500 bg-white p-4 rounded-xl border text-center">No admins found.</p>
+            )}
+            {admins.map((a) => (
+              <div key={a._id} className="flex justify-between items-center bg-white p-4 rounded-xl border">
+                <div>
+                  <h4 className="font-bold text-[#021335]">
+                    {a.name} {currentAdmin?.id === a._id && <span className="text-xs text-[#1A49C9] font-semibold ml-1">(you)</span>}
+                  </h4>
+                  <p className="text-xs text-gray-500">{a.email}</p>
+                </div>
+                {currentAdmin?.id !== a._id && (
+                  <button
+                    onClick={() => handleDeleteAdmin(a._id, a.name)}
+                    className="text-red-600 font-bold text-sm hover:underline"
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div >
